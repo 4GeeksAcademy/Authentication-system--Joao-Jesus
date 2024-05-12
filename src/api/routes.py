@@ -6,7 +6,8 @@ from api.models import db, User
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+#Package for authentication
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, JWTManager
 
 api = Blueprint('api', __name__)
 
@@ -24,8 +25,8 @@ def handle_hello():
     return jsonify(response_body), 200
 
 
-@api.route('/log-in', methods=['POST'])
-def authncticate_user():
+@api.route('/login', methods=['POST'])
+def authencticate_user():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
 
@@ -38,7 +39,7 @@ def authncticate_user():
     return jsonify({ "token": jwt_token, "user_id": user.id })
 
 
-@api.route('/sign-up', methods=['POST'])
+@api.route('/signup', methods=['POST'])
 def signup_user():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
