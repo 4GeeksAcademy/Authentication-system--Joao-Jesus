@@ -1,15 +1,40 @@
 import React, { useState } from "react";
-
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const onSubmit = (e) => {
+    const navigate = useNavigate()
+
+    const onSubmit = async (e) => {
         e.preventDefault(); // Prevent default form submission behavior
         console.log(email, password);
         // Add your login logic here
+        if (email === '' || password === '') {
+            alert('Email or password should not be empty');
+        } else {
+             fetch(`${process.env.BACKEND_URL}/api/login`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                }).then((res) => res.json())
+                .then((resAsJson) => {
+                    console.log('Response from Backend', resAsJson );
+                    localStorage.setItem('jwt-token', resAsJson.token)
+                    navigate('/')
+                }).catch ((err) => {
+                    console.log('Something wromg whencalling API', err)
+                })
+            } 
+        
     };
+    
 
     return (
         <div className="container">
