@@ -6,19 +6,19 @@ import { useNavigate } from "react-router-dom";
 
 export const Home = () => {
 
-
-	const [msg, setMsg] = useState('')
-	const navigate =  useNavigate()
+	
+	const [msg, setMsg] = useState('');
+	const navigate =  useNavigate();
 
 	useEffect(() => {
-		const mytoken = localStorage.getItem('jwt - token')
+		const myToken = localStorage.getItem('jwt-token');
 
-		if(mytoken) {
+		if(myToken) {
 
 			fetch(process.env.BACKEND_URL + "/api/hello", {
 						method: 'GET',
 						headers: {
-							'Authoriation': 'Bearer' + mytoken,
+							'Authorization': 'Bearer ' + myToken,
 							"Content-Type": "application/json"
 						}
 
@@ -29,7 +29,7 @@ export const Home = () => {
 						console.log("Error loading message from backend", error)
 					})
 		}else {
-			navigate('/login')
+			//navigate('/log-in')
 
 		}
 

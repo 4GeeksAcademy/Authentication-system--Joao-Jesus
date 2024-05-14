@@ -7,29 +7,29 @@ const Login = () => {
 
     const navigate = useNavigate()
 
-    const onSubmit = async (e) => {
-        e.preventDefault(); // Prevent default form submission behavior
+    const onSubmit = async () => {
+        //e.preventDefault(); // Prevent default form submission behavior
         console.log(email, password);
         // Add your login logic here
         if (email === '' || password === '') {
             alert('Email or password should not be empty');
         } else {
-             fetch(`${process.env.BACKEND_URL}/api/login`, {
+             fetch(process.env.BACKEND_URL + "/api/hello", {
                     method: 'POST',
-                    body: JSON.stringify({
-                        email: email,
-                        password: password
-                    }),
                     headers: {
-                        'Content-Type': 'application/json'
+                        "Content-Type": "application/json"
                     },
+                    body: JSON.stringify({
+                        'email': email,
+                        'password': password
+                    }),
                 }).then((res) => res.json())
                 .then((resAsJson) => {
                     console.log('Response from Backend', resAsJson );
                     localStorage.setItem('jwt-token', resAsJson.token)
                     navigate('/')
                 }).catch ((err) => {
-                    console.log('Something wromg whencalling API', err)
+                    console.log('Something went wrong when calling API', err)
                 })
             } 
         
@@ -38,7 +38,7 @@ const Login = () => {
 
     return (
         <div className="container">
-            <form onSubmit={onSubmit}> {/* Added form element */}
+            <form className="mt-2"> {/* Added form element */}
                 <div className="mb-3 row">
                     <label htmlFor="staticEmail" className="col-sm-2 col-form-label">Email address</label>
                     <div className="col-sm-10">
@@ -66,7 +66,7 @@ const Login = () => {
                 </div>
 
                 <div className="col-12">
-                    <button type="submit" className="btn btn-primary">Submit</button>
+                    <button type="submit" className="btn btn-primary" onClick={onSubmit}>Submit</button>
                 </div>
             </form>
         </div>

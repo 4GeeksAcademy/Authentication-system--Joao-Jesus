@@ -23,18 +23,18 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			getMessage: async () => {
 				
-					const mytoken = localStorage.getItem('jwt: token')
-
+					const myToken = localStorage.getItem('jwt-token');
+					
 					fetch(process.env.BACKEND_URL + "/api/hello", {
 						method: 'GET',
 						headers: {
-							'Authoriation': 'Bearer' + mytoken,
+							"Authorization": "Bearer " + myToken,
 							"Content-Type": "application/json"
 						}
 
 					}).then((res) => res.json())
 					.then((data) => {
-						setStore({message: data.message})
+						setStore({message: data.message});
 					}).catch((error) => {
 						console.log("Error loading message from backend", error)
 					})

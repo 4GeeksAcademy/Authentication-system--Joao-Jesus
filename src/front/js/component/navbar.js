@@ -7,7 +7,7 @@ export const Navbar = () => {
 
 	const onLogout = () => {
 		localStorage.removeItem('jwt-token')
-		navigate('/login')
+		navigate('/log-in')
 	}
 
 

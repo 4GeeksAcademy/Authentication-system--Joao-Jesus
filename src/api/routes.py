@@ -8,7 +8,7 @@ from flask_cors import CORS
 
 
 #Package for authentication
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, JWTManager
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 api = Blueprint('api', __name__)
 
@@ -16,7 +16,7 @@ api = Blueprint('api', __name__)
 CORS(api)
 
 
-@api.route('/login', methods=['POST'])
+@api.route('/log-in', methods=['POST'])
 def authencticate_user():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
@@ -36,12 +36,12 @@ def authencticate_user():
 def handle_hello():
 
     response_body = {
-        "message": "Hello! This is a private route. If you can see this message, means that you are authenticated (logged ib)"
+        "message": "Hello! This is a private route. If you can see this message, means that you are authenticated (logged in)"
     }
 
     return jsonify(response_body), 200
 
-@api.route('/signup', methods=['POST'])
+@api.route('/sign-up', methods=['POST'])
 def signup_user():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
