@@ -1,80 +1,116 @@
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			message: null,
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
+			validatedEmail: null,
 		},
 		actions: {
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
 
-			getMessage: async () => {
+			validate: async () => {
 
-				const myToken = localStorage.getItem('jwt-token');
+				try {
+					const myToken = localStorage.getItem('jwt-token');
 
-				fetch(process.env.BACKEND_URL + "/api/hello", {
-					method: 'GET',
-					headers: {
-						"Authorization": "Bearer " + myToken,
-						"Content-Type": "application/json"
+					const response = await fetch(process.env.BACKEND_URL + "/api/validate", {
+						method: 'GET',
+						headers: {
+							"Authorization": "Bearer " + myToken,
+							"Content-Type": "application/json"
+						}
+					})
+					const responseAsJson = await response?.json()
+
+					if (responseAsJson) {
+						setStore({ validatedEmail: responseAsJson.email });
 					}
 
-				}).then((res) => res.json())
-					.then((data) => {
-						setStore({ message: data.message });
-					}).catch((error) => {
-						console.log("Error loading message from backend", error)
-					})
+
+				} catch (error) {
+					console.log("Error loading message from backend", error)
+				}
 			},
-			signUp: async (email, password) => {
+			signUp: async (email, password, navigate) => {
 				try {
+
+					console.log("email")
+					console.log(email)
+					console.log(password)
+
 					const response = await fetch(process.env.BACKEND_URL + "/api/sign-up", {
 						method: 'POST',
 						headers: {
 							"Content-Type": "application/json",
 							"Access-Control-Allow-Origin": "*"
 						},
-						body: { password, email }
+						body: JSON.stringify({
+							'email': email,
+							'password': password
+						}),
 
 					})
 
-					console.log("response")
-					console.log(response)
+
+					const responseAsJson = await response.json()
+
+					console.log("responseAsJson")
+					console.log(responseAsJson)
+
+					if (responseAsJson.msg == "New User Signed up...") {
+						navigate("/log-in")
+					}
+
+
 
 				} catch (error) {
 					console.log("error from signUp action")
 					console.log(error)
 				}
 
+			},
+			logout: (navigate) => {
+				localStorage.removeItem('jwt-token')
+				setStore({ validatedEmail: null });
+				navigate('/log-in')
+			},
+			login: async (email, password, navigate) => {
+				try {
+
+					const response = await fetch(process.env.BACKEND_URL + "/api/log-in", {
+						method: 'POST',
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify({
+							'email': email,
+							'password': password
+						}),
+					})
+
+
+					const responseAsJson = await response.json()
+
+
+					console.log("responseAsJson")
+					console.log(responseAsJson)
+
+
+					if (responseAsJson.token) {
+						localStorage.setItem('jwt-token', responseAsJson.token)
+						setStore({ validatedEmail: email });
+						navigate('/')
+					} else {
+						alert("email or password are wrong")
+					}
+
+				} catch (error) {
+
+					console.log("error")
+					console.log(error)
+				}
+
 			}
 		},
-		changeColor: (index, color) => {
-			//get the store
-			const store = getStore();
 
-			//we have to loop the entire demo array to look for the respective index
-			//and change its color
-			const demo = store.demo.map((elm, i) => {
-				if (i === index) elm.background = color;
-				return elm;
-			});
-
-			//reset the global store
-			setStore({ demo: demo });
-		},
 
 	}
 };

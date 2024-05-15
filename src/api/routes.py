@@ -1,6 +1,8 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
+
+
 from flask import Flask, request, jsonify, url_for, Blueprint,Response
 from api.models import db, User
 from api.utils import generate_sitemap, APIException
@@ -14,17 +16,9 @@ api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
 CORS(api)
-api.config['CORS_HEADERS'] = 'Access-Control-Allow-Origin'
 
 
 
-@api.before_request
-def before_request():
-    headers = {'Access-Control-Allow-Origin': '*',
-               'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-               'Access-Control-Allow-Headers': 'Content-Type'}
-    if request.method.lower() == 'options':
-        return jsonify(headers), 200
 
 @api.route('/log-in', methods=['POST'])
 def authencticate_user():
@@ -52,25 +46,24 @@ def handle_hello():
 
 @api.route('/sign-up', methods=['POST'])
 def signup_user():
+ 
+  email = request.json.get("email", None)
+  password = request.json.get("password", None)
 
-    email = request.json.get("email", None)
-    password = request.json.get("password", None)
+  if email is None:
+      return jsonify({"msg": "Email can not be empty"}), 400
+  if password is None:
+      return jsonify({"msg": "Password can not be empty"}), 400
 
-    if email is None:
-        return jsonify({"msg": "Email can not be empty"}), 400
-    if password is None:
-        return jsonify({"msg": "Password can not be empty"}), 400
+  user = User(
+      email = email,
+      password = password,
+      is_active = True
+  )
 
-    user = User(
-        email = email,
-        password = password,
-        is_active = True
-    )
-
-    db.session.add(user)
-    db.session.commit()
-    
-    return jsonify({ "msg": "New User Signed up..." }), 201
+  db.session.add(user)
+  db.session.commit()
+  return jsonify({ "msg": "New User Signed up..." }), 201
 
 @api.route('/validate', methods=['GET'])
 @jwt_required()

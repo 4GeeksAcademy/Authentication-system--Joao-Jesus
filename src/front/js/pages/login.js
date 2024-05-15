@@ -1,40 +1,29 @@
 import React, { useState, useContext } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import { Context } from "../store/appContext";
 
 
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const { store, actions } = useContext(Context);
 
     const navigate = useNavigate()
 
-    const onSubmit = async () => {
-        //e.preventDefault(); // Prevent default form submission behavior
-        console.log(email, password);
-        // Add your login logic here
-        if (email === '' || password === '') {
-            alert('Email or password should not be empty');
-        } else {
-            fetch(process.env.BACKEND_URL + "/api/validate", {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    'email': email,
-                    'password': password
-                }),
-            }).then((res) => res.json())
-                .then((resAsJson) => {
-                    console.log('Response from Backend', resAsJson);
-                    localStorage.setItem('jwt-token', resAsJson.token)
-                    navigate('/')
-                }).catch((err) => {
-                    console.log('Something went wrong when calling API', err)
-                })
-        }
+    const onSubmit = async (event) => {
+        try {
+            await event.preventDefault();
 
+            if (email === '' || password === '') {
+                alert('Email or password should not be empty');
+            }
+
+            await actions.login(email, password, navigate)
+
+        } catch (error) {
+            console.log(error)
+        }
     };
 
 

@@ -1,12 +1,14 @@
 import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext";
+import { Navigate, useNavigate } from "react-router-dom";
 
 
 const Signup = () => {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [username, setUsername] = useState('')
+  const navigate = useNavigate()
+
 
 
   const { store, actions } = useContext(Context);
@@ -15,26 +17,11 @@ const Signup = () => {
   const onSubmit = async () => {
     console.log(email, password)
     console.log(actions)
-    await actions.signUp(email, password)
+    await actions.signUp(email, password, navigate)
   }
 
   return (
     <div className="container">
-
-      <div className="mb-3 row">
-
-        <label className="col-sm-2 col-form-label">username</label>
-
-        <div className="col-sm-10">
-          <input
-            type="text"
-            className="form-control-plaintext"
-            id="staticUser"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </div>
-      </div>
 
       <div className="mb-3 row">
 
