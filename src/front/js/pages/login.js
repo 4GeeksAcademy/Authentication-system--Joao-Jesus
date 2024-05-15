@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+
+
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -14,27 +16,27 @@ const Login = () => {
         if (email === '' || password === '') {
             alert('Email or password should not be empty');
         } else {
-             fetch(process.env.BACKEND_URL + "/api/hello", {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        'email': email,
-                        'password': password
-                    }),
-                }).then((res) => res.json())
+            fetch(process.env.BACKEND_URL + "/api/validate", {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    'email': email,
+                    'password': password
+                }),
+            }).then((res) => res.json())
                 .then((resAsJson) => {
-                    console.log('Response from Backend', resAsJson );
+                    console.log('Response from Backend', resAsJson);
                     localStorage.setItem('jwt-token', resAsJson.token)
                     navigate('/')
-                }).catch ((err) => {
+                }).catch((err) => {
                     console.log('Something went wrong when calling API', err)
                 })
-            } 
-        
+        }
+
     };
-    
+
 
     return (
         <div className="container">

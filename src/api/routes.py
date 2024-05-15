@@ -1,7 +1,7 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-from flask import Flask, request, jsonify, url_for, Blueprint
+from flask import Flask, request, jsonify, url_for, Blueprint,Response
 from api.models import db, User
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
@@ -14,7 +14,17 @@ api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
 CORS(api)
+api.config['CORS_HEADERS'] = 'Access-Control-Allow-Origin'
 
+
+
+@api.before_request
+def before_request():
+    headers = {'Access-Control-Allow-Origin': '*',
+               'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+               'Access-Control-Allow-Headers': 'Content-Type'}
+    if request.method.lower() == 'options':
+        return jsonify(headers), 200
 
 @api.route('/log-in', methods=['POST'])
 def authencticate_user():
@@ -34,7 +44,6 @@ def authencticate_user():
 @api.route('/hello', methods=['POST', 'GET'])
 @jwt_required()
 def handle_hello():
-
     response_body = {
         "message": "Hello! This is a private route. If you can see this message, means that you are authenticated (logged in)"
     }
@@ -43,6 +52,7 @@ def handle_hello():
 
 @api.route('/sign-up', methods=['POST'])
 def signup_user():
+
     email = request.json.get("email", None)
     password = request.json.get("password", None)
 
