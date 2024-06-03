@@ -2,8 +2,11 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			validatedEmail: null,
+			validatedEmail: '',
+
 		},
+
+
 		actions: {
 
 			validate: async () => {
@@ -21,7 +24,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					const responseAsJson = await response?.json()
 
 					if (responseAsJson) {
-						setStore({ validatedEmail: responseAsJson.email });
+						setStore({ validatedEmail: responseAsJson.email, password: password });
 					}
 
 
@@ -29,6 +32,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log("Error loading message from backend", error)
 				}
 			},
+
 			signUp: async (email, password, navigate) => {
 				try {
 
@@ -40,11 +44,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 						method: 'POST',
 						headers: {
 							"Content-Type": "application/json",
-							"Access-Control-Allow-Origin": "*"
+
 						},
 						body: JSON.stringify({
 							'email': email,
-							'password': password
+
 						}),
 
 					})
@@ -67,11 +71,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 
 			},
+
 			logout: (navigate) => {
 				localStorage.removeItem('jwt-token')
 				setStore({ validatedEmail: null });
 				navigate('/log-in')
 			},
+
+
 			login: async (email, password, navigate) => {
 				try {
 

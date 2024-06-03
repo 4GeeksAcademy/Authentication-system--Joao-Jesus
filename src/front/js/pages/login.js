@@ -29,7 +29,7 @@ const Login = () => {
 
     return (
         <div className="container">
-            <form className="mt-2"> {/* Added form element */}
+            <form className="mt-2"> 
                 <div className="mb-3 row">
                     <label htmlFor="staticEmail" className="col-sm-2 col-form-label">Email address</label>
                     <div className="col-sm-10">

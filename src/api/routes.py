@@ -63,6 +63,7 @@ def signup_user():
 
   db.session.add(user)
   db.session.commit()
+
   return jsonify({ "msg": "New User Signed up..." }), 201
 
 @api.route('/validate', methods=['GET'])
@@ -72,4 +73,4 @@ def validate_user():
     current_user_id = get_jwt_identity()
     user = User.query.get(current_user_id)
     
-    return jsonify({"id": user.id, "email": user.email }), 200
+    return jsonify({"name": user.name, "id": user.id, "email": user.email }), 200
